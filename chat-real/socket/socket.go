@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var upgrader = websocket.Upgrader{
+var Upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
@@ -14,5 +14,5 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan I.Message)
+var Clients = make(map[*websocket.Conn]bool)
+var Broadcast = make(chan I.Message)

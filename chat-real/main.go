@@ -22,10 +22,12 @@ func main() {
 
 	fs := http.FileServer(http.Dir(dir))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	log.Println("Serving at localhost:4001...")
 
-	log.Println("Serving at localhost:8000...")
+	// routes
 
 	http.HandleFunc("/", C.Home)
+	
 
 	svr := &http.Server{
 		Addr:         "127.0.0.1:4001",

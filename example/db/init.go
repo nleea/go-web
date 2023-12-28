@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	host     = "db.seoqxlxkudnimkoezefb.supabase.co"
+	host     = ""
 	port     = 5432
 	user     = "postgres"
-	password = "NBunX9sBoovmVOZQ"
+	password = ""
 	dbname   = "postgres"
 )
 
