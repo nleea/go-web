@@ -1,12 +1,10 @@
 package main
 
 import (
+	C "chat/controllers"
+	_ "chat/socket"
 	"context"
-	C "example/controller"
-	DB "example/db"
 	"flag"
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
@@ -23,23 +21,13 @@ func main() {
 	flag.Parse()
 
 	fs := http.FileServer(http.Dir(dir))
-	r := mux.NewRouter().StrictSlash(true)
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+	log.Println("Serving at localhost:8000...")
 
-	r.HandleFunc("/", C.Home).Methods("GET")
-	r.HandleFunc("/hello", C.Hello).Methods("GET")
-	r.HandleFunc("/greet/{name}/", C.Greeting).Methods("GET")
-
-	db := DB.DBCONNECT()
-	c := C.Controller(db)
-
-	r.HandleFunc("/users/", c.GetUsers).Methods("GET")
-	r.HandleFunc("/users/register/", c.CreateTemplate).Methods("GET")
-	r.HandleFunc("/users/create/", c.CreateUser).Methods("POST")
+	http.HandleFunc("/", C.Home)
 
 	svr := &http.Server{
-		Handler:      r,
 		Addr:         "127.0.0.1:4001",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -67,4 +55,5 @@ func main() {
 	} else {
 		log.Println("Server stopped gracefully")
 	}
+
 }
