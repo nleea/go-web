@@ -21,18 +21,12 @@ func main() {
 
 	server.OnEvent("/", "msg", func(s socketio.Conn, resp response) {
 		fmt.Println(resp["msg"])
-		// log.Println("message:", resp.msg)
-		// s.Emit("reply", "Message received: "+resp.msg)
 		s.Emit("rooms", s.Rooms())
 	})
 
-	// server.OnEvent("/", "rooms", func(s socketio.Conn) {
-	// 	s.Emit("rooms", s.Rooms())
-	// })
-
-	// server.OnEvent("/", "reply", func(s socketio.Conn, msg string) {
-	// 	s.Emit("reply", msg)
-	// })
+	server.OnEvent("m", "msg", func(s socketio.Conn, resp response) {
+		s.Emit("rooms", s.Rooms())
+	})
 
 	server.OnError("/", func(s socketio.Conn, e error) {
 		log.Println("meet error:", e)

@@ -1,10 +1,8 @@
 package main
 
 import (
-	C "chat/controllers"
-	_ "chat/socket"
 	"context"
-	"flag"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -15,21 +13,18 @@ import (
 
 func main() {
 
-	var dir string
+	r := mux.NewRouter()
 
-	flag.StringVar(&dir, "dir", "static/", "File server")
-	flag.Parse()
+	h := newHub()
 
-	fs := http.FileServer(http.Dir(dir))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	log.Println("Serving at localhost:4001...")
+	go h.run()
 
-	// routes
-
-	http.HandleFunc("/", C.Home)
-	
+	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(h, w, r)
+	})
 
 	svr := &http.Server{
+		Handler:      r,
 		Addr:         "127.0.0.1:4001",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -57,5 +52,4 @@ func main() {
 	} else {
 		log.Println("Server stopped gracefully")
 	}
-
 }
